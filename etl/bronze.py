@@ -50,7 +50,9 @@ def process_normal_file(file_path: Path, bucket: str, db_name: str):
         mode="overwrite"
     )
 
+    logger.info(f"Bronze/{table_name}: {len(df):,} rows.")
     logger.info(f"Table registered: {db_name}.bronze_{table_name}")
+
 
 def process_large_file(
     file_path: Path,
@@ -68,6 +70,7 @@ def process_large_file(
 
     first_chunk = True
 
+    n_rows = 0
     for i, chunk in enumerate(pd.read_csv(file_path, chunksize=chunk_size), start=1):
         logger.info(f"Processing chunk {i} with shape {chunk.shape}")
 
@@ -81,7 +84,9 @@ def process_large_file(
         )
 
         first_chunk = False
+        n_rows = n_rows + chunk.shape[0]
 
+    logger.info(f"Bronze/{table_name}: {n_rows} rows.")
     logger.info(f"Finished loading large file: {table_name}")
 
 
@@ -96,7 +101,7 @@ def main():
     if not data_dir.exists():
         raise ValueError(f"Data dir not found: {data_dir}")
     
-    db_name = "flights"
+    db_name = "flights_bronze"
     
     csv_files = list(data_dir.glob("*.csv"))
 
