@@ -37,7 +37,7 @@ def process_normal_file(file_path: Path, bucket: str, db_name: str):
 
     df = pd.read_csv(file_path)
 
-    s3_path = f"s3://{bucket}/{db_name}/bronze/{table_name}/"
+    s3_path = f"s3://{bucket}/flights/bronze/{table_name}/"
 
     logger.info(f"Uploading to {s3_path}")
 
@@ -46,12 +46,12 @@ def process_normal_file(file_path: Path, bucket: str, db_name: str):
         path=s3_path,
         dataset=True,
         database=db_name,
-        table=f"bronze_{table_name}",
+        table=table_name,
         mode="overwrite"
     )
 
     logger.info(f"Bronze/{table_name}: {len(df):,} rows.")
-    logger.info(f"Table registered: {db_name}.bronze_{table_name}")
+    logger.info(f"Table registered: {db_name}.table_name")
 
 
 def process_large_file(
@@ -61,8 +61,8 @@ def process_large_file(
     chunk_size: int = 500_000,
 ) -> None:
     table_name = file_path.stem
-    table = f"bronze_{table_name}"
-    s3_path = f"s3://{bucket}/{db_name}/bronze/{table_name}/"
+    table = table_name
+    s3_path = f"s3://{bucket}/flights/bronze/{table_name}/"
 
     logger.info(f"Processing large file: {file_path}")
     logger.info(f"Target table: {db_name}.{table}")
