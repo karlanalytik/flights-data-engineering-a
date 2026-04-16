@@ -25,6 +25,7 @@ The pipeline includes:
 .
 ├── etl
 │   ├── bronze.py
+│   ├── gold.py
 │   └── silver.py
 ├── images
 ├── .gitignore
@@ -63,15 +64,20 @@ Run the ETL pipeline from the command line using the following commands:
 ### Run Bronze Layer
 
 ```bash
-uv run python etl/bronze.py --bucket itam-anlytics-karla --data-dir data/flights
+uv run python etl/bronze.py --bucket <your-bucket> --data-dir data/flights
 ```
 
 ### Run Silver Layer
 
 ```bash
-uv run python etl/silver.py --bucket itam-anlytics-karla
+uv run python etl/silver.py --bucket <your-bucket>
 ```
-**Note**: The bucket name shown above corresponds to a specific user. In practice, this value should not be hardcoded and must be replaced with your own S3 bucket when running the pipeline.
+
+### Run Gold Layer
+
+```bash
+uv run python etl/gold.py --bucket <your-bucket>
+```
 
 ---
 
@@ -84,6 +90,9 @@ uv run python etl/silver.py --bucket itam-anlytics-karla
 
 - **`silver.py/`**
   Transforms data into Parquet format and builds aggregated tables (Silver layer).
+
+- **`gold.py/`**
+  Creates a curated analytical table by joining tables in Athena and saving into Parquet format (Gold layer).
 
 ---
 
@@ -216,3 +225,6 @@ This project relies on the following Python libraries:
 ![Flights daily - Silver AWS Glue partitions](images/flights_daily_silver_glue_partitions.png)
 ![Flights monthly - Silver AWS Glue register and schema](images/flights_monthly_silver_glue_schema.png)
 ![Flights by airport - Silver AWS Glue register and schema](images/flights_by_airport_silver_glue_schema.png)
+
+### ETL - Gold
+![Flights daily - Gold AWS Glue register and schema](images/vuelos_analitica_gold_glue_schema.png)
